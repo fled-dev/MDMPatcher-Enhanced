@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,117 +24,107 @@
 #endif
 #include "thread.h"
 
-int thread_new(THREAD_T *thread, thread_func_t thread_func, void* data)
-{
+int thread_new(THREAD_T *thread, thread_func_t thread_func, void *data) {
 #ifdef WIN32
-	HANDLE th = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)thread_func, data, 0, NULL);
-	if (th == NULL) {
-		return -1;
-	}
-	*thread = th;
-	return 0;
+  HANDLE th =
+      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)thread_func, data, 0, NULL);
+  if (th == NULL) {
+    return -1;
+  }
+  *thread = th;
+  return 0;
 #else
-	int res = pthread_create(thread, NULL, thread_func, data);
-	return res;
+  int res = pthread_create(thread, NULL, thread_func, data);
+  return res;
 #endif
 }
 
-void thread_detach(THREAD_T thread)
-{
+void thread_detach(THREAD_T thread) {
 #ifdef WIN32
-	CloseHandle(thread);
+  CloseHandle(thread);
 #else
-	pthread_detach(thread);
+  pthread_detach(thread);
 #endif
 }
 
-void thread_free(THREAD_T thread)
-{
+void thread_free(THREAD_T thread) {
 #ifdef WIN32
-	CloseHandle(thread);
+  CloseHandle(thread);
 #endif
 }
 
-int thread_join(THREAD_T thread)
-{
-	/* wait for thread to complete */
+int thread_join(THREAD_T thread) {
+  /* wait for thread to complete */
 #ifdef WIN32
-	return (int)WaitForSingleObject(thread, INFINITE);
+  return (int)WaitForSingleObject(thread, INFINITE);
 #else
-	return pthread_join(thread, NULL);
+  return pthread_join(thread, NULL);
 #endif
 }
 
-int thread_alive(THREAD_T thread)
-{
+int thread_alive(THREAD_T thread) {
 #ifdef WIN32
-	return WaitForSingleObject(thread, 0) == WAIT_TIMEOUT;
+  return WaitForSingleObject(thread, 0) == WAIT_TIMEOUT;
 #else
-	return pthread_kill(thread, 0) == 0;
+  return pthread_kill(thread, 0) == 0;
 #endif
 }
 
-int thread_cancel(THREAD_T thread)
-{
+int thread_cancel(THREAD_T thread) {
 #ifdef WIN32
-	return -1;
+  return -1;
 #else
 #ifdef HAVE_PTHREAD_CANCEL
-	return pthread_cancel(thread);
+  return pthread_cancel(thread);
 #else
-	return -1;
+  return -1;
 #endif
 #endif
 }
 
-void mutex_init(mutex_t* mutex)
-{
+void mutex_init(mutex_t *mutex) {
 #ifdef WIN32
-	InitializeCriticalSection(mutex);
+  InitializeCriticalSection(mutex);
 #else
-	pthread_mutex_init(mutex, NULL);
+  pthread_mutex_init(mutex, NULL);
 #endif
 }
 
-void mutex_destroy(mutex_t* mutex)
-{
+void mutex_destroy(mutex_t *mutex) {
 #ifdef WIN32
-	DeleteCriticalSection(mutex);
+  DeleteCriticalSection(mutex);
 #else
-	pthread_mutex_destroy(mutex);
+  pthread_mutex_destroy(mutex);
 #endif
 }
 
-void mutex_lock(mutex_t* mutex)
-{
+void mutex_lock(mutex_t *mutex) {
 #ifdef WIN32
-	EnterCriticalSection(mutex);
+  EnterCriticalSection(mutex);
 #else
-	pthread_mutex_lock(mutex);
+  pthread_mutex_lock(mutex);
 #endif
 }
 
-void mutex_unlock(mutex_t* mutex)
-{
+void mutex_unlock(mutex_t *mutex) {
 #ifdef WIN32
-	LeaveCriticalSection(mutex);
+  LeaveCriticalSection(mutex);
 #else
-	pthread_mutex_unlock(mutex);
+  pthread_mutex_unlock(mutex);
 #endif
 }
 
-void thread_once(thread_once_t *once_control, void (*init_routine)(void))
-{
+void thread_once(thread_once_t *once_control, void (*init_routine)(void)) {
 #ifdef WIN32
-	while (InterlockedExchange(&(once_control->lock), 1) != 0) {
-		Sleep(1);
-	}
-	if (!once_control->state) {
-		once_control->state = 1;
-		init_routine();
-	}
-	InterlockedExchange(&(once_control->lock), 0);
+  while (InterlockedExchange(&(once_control->lock), 1) != 0) {
+    Sleep(1);
+  }
+  if (!once_control->state) {
+    once_control->state = 1;
+    init_routine();
+  }
+  InterlockedExchange(&(once_control->lock), 0);
 #else
-	pthread_once(once_control, init_routine);
+  pthread_once(once_control, init_routine);
 #endif
 }

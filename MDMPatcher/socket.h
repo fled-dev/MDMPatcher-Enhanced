@@ -16,20 +16,16 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifndef SOCKET_SOCKET_H
 #define SOCKET_SOCKET_H
 
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 
-enum fd_mode {
-	FDM_READ,
-	FDM_WRITE,
-	FDM_EXCEPT
-};
+enum fd_mode { FDM_READ, FDM_WRITE, FDM_EXCEPT };
 typedef enum fd_mode fd_mode;
 
 #ifdef WIN32
@@ -57,12 +53,13 @@ int socket_close(int fd);
 int socket_receive(int fd, void *data, size_t size);
 int socket_peek(int fd, void *data, size_t size);
 int socket_receive_timeout(int fd, void *data, size_t size, int flags,
-					 unsigned int timeout);
+                           unsigned int timeout);
 
 int socket_send(int fd, void *data, size_t size);
 
 void socket_set_verbose(int level);
 
-const char *socket_addr_to_string(struct sockaddr *addr, char *addr_out, size_t addr_out_size);
+const char *socket_addr_to_string(struct sockaddr *addr, char *addr_out,
+                                  size_t addr_out_size);
 
-#endif	/* SOCKET_SOCKET_H */
+#endif /* SOCKET_SOCKET_H */

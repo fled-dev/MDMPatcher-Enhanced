@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifndef __THREAD_H
@@ -29,12 +29,12 @@
 typedef HANDLE THREAD_T;
 typedef CRITICAL_SECTION mutex_t;
 typedef volatile struct {
-	LONG lock;
-	int state;
+  LONG lock;
+  int state;
 } thread_once_t;
 #define THREAD_ONCE_INIT {0, 0}
 #define THREAD_ID GetCurrentThreadId()
-#define THREAD_T_NULL (THREAD_T)NULL
+#define THREAD_T_NULL (THREAD_T) NULL
 #else
 #include <pthread.h>
 #include <signal.h>
@@ -43,12 +43,12 @@ typedef pthread_mutex_t mutex_t;
 typedef pthread_once_t thread_once_t;
 #define THREAD_ONCE_INIT PTHREAD_ONCE_INIT
 #define THREAD_ID pthread_self()
-#define THREAD_T_NULL (THREAD_T)NULL
+#define THREAD_T_NULL (THREAD_T) NULL
 #endif
 
-typedef void* (*thread_func_t)(void* data);
+typedef void *(*thread_func_t)(void *data);
 
-int thread_new(THREAD_T* thread, thread_func_t thread_func, void* data);
+int thread_new(THREAD_T *thread, thread_func_t thread_func, void *data);
 void thread_detach(THREAD_T thread);
 void thread_free(THREAD_T thread);
 int thread_join(THREAD_T thread);
@@ -66,10 +66,10 @@ int thread_cancel(THREAD_T thread);
 #endif
 #endif
 
-void mutex_init(mutex_t* mutex);
-void mutex_destroy(mutex_t* mutex);
-void mutex_lock(mutex_t* mutex);
-void mutex_unlock(mutex_t* mutex);
+void mutex_init(mutex_t *mutex);
+void mutex_destroy(mutex_t *mutex);
+void mutex_lock(mutex_t *mutex);
+void mutex_unlock(mutex_t *mutex);
 
 void thread_once(thread_once_t *once_control, void (*init_routine)(void));
 
