@@ -1,6 +1,6 @@
 
 # MDMPatcher Enhanced
-<img src="https://github.com/fled-dev/MDMPatcher-Enhanced/blob/931b3f9032d948c277611addd234dc5f304c88d3/screenshots/banner.png" style="width:100%">
+<img src="screenshots/banner.png" alt="MDMPatcher Enhanced" style="width:100%">
 
 > **iOS / iPadOS 27: this tool does not work.** Apple changed how management information is restored from backups, closing the route used by this app. See [Compatibility](#compatibility) for Apple's documentation and the limits of downgrading.
 >
