@@ -6,14 +6,9 @@
 >
 > **Maintenance:** I don't actively maintain this repository. Contributions, documentation fixes, compatibility reports, and pull requests are welcome. See [Maintenance & Contributions](#maintenance--contributions).
 
-### ⚠️ **Legal & Technical Disclaimer**  
-> This project is intended strictly for **educational, diagnostic, and personal device recovery use only**.  
-> It must **only** be used on iOS devices that the user **legally owns** and has the right to modify.  
->
-> **MDMPatcher Enhanced does not jailbreak, exploit or modify firmware**. It relies entirely on public interfaces (AFC, plist editing, USB restore flows).  
->
-> The tool targets situations like second-hand iOS devices where MDM was not removed correctly.  
-> **Using this software on managed, corporate, or institutional devices without permission is prohibited and may be illegal.**
+### Legal & Technical Disclaimer
+
+> Use only for education, diagnostics, or recovery on devices you own or are authorized to modify. No jailbreak or firmware modification is performed. Provided "as is", without warranty; the authors and contributors accept no liability for damage, data loss, or legal consequences.
 
 ## Table of Contents
 
@@ -141,140 +136,26 @@ This project aims to support lawful restoration of iOS/iPadOS devices that were 
 
 ```mermaid
 flowchart TD
-    %% User Interface Layer
-    A["🖥️ macOS Application Launch"] --> B["📱 USB Device Detection"]
-    
-    %% USB Detection System
-    B --> C{"🔍 iOS Device Connected?"}
-    C -->|No| D["⏳ Monitor USB Events"]
-    D --> C
-    C -->|Yes| E["✅ Device Validation"]
-    
-    %% Device Validation
-    E --> F{"📋 Product ID Check"}
-    F -->|4776/4779| G["🔗 Establish Connection"]
-    F -->|Other| D
-    
-    %% Device Communication Layer
-    G --> H["📡 libimobiledevice Init"]
-    H --> I["🔐 Lockdown Protocol"]
-    I --> J["📊 Device Info Extraction"]
-    
-    %% Information Gathering
-    J --> K["🆔 UDID Retrieval"]
-    J --> L["📱 Device Model"]
-    J --> M["🔢 Serial Number"]
-    J --> N["📶 IMEI (if available)"]
-    J --> O["🏗️ Build Version"]
-    
-    %% Data Processing
-    K --> P["📋 Device Data Validation"]
-    L --> P
-    M --> P
-    N --> P
-    O --> P
-    
-    P --> Q{"✅ All Data Retrieved?"}
-    Q -->|No| R["❌ Error Display"]
-    Q -->|Yes| S["🎯 Patch Button Enabled"]
-    
-    %% User Interaction
-    S --> T{"👆 User Clicks Patch?"}
-    T -->|No| U["⏸️ Wait for User"]
-    U --> T
-    T -->|Yes| V["🚀 Start Patching Process"]
-    
-    %% Patching Process
-    V --> W["📁 Create Temp Directory"]
-    W --> X["🔓 Decrypt Template Files"]
-    
-    %% Template Processing
-    X --> Y["📄 extension1.pdf Decryption"]
-    X --> Z["📄 extension2.pdf Decryption"]
-    X --> AA["📦 libiMobileeDevice.dylib Decryption"]
-    
-    %% Obfuscation Removal
-    Y --> BB["🔄 Byte Swapping"]
-    Z --> BB
-    AA --> BB
-    
-    BB --> CC["🔑 Password Computation"]
-    CC --> DD["🛡️ RNCryptor Decryption"]
-    
-    %% File Customization
-    DD --> EE["✏️ Info.plist Customization"]
-    DD --> FF["✏️ Manifest.plist Customization"]
-    DD --> GG["📦 Backup Archive Extraction"]
-    
-    %% Device-Specific Patching
-    EE --> HH["🔧 Replace Build Version"]
-    EE --> II["🔧 Replace Product Type"]
-    EE --> JJ["🔧 Replace Serial Number"]
-    EE --> KK["🔧 Replace UDID"]
-    EE --> LL["🔧 Handle IMEI (if present)"]
-    
-    FF --> MM["📋 Manifest Updates"]
-    GG --> NN["📁 MDMB Directory Creation"]
-    
-    %% File Assembly
-    HH --> OO["💾 Write Info.plist"]
-    II --> OO
-    JJ --> OO
-    KK --> OO
-    LL --> OO
-    MM --> PP["💾 Write Manifest.plist"]
-    NN --> QQ["📦 Extract Backup Files"]
-    
-    %% Backup Restoration
-    OO --> RR["🔄 Backup Structure Ready"]
-    PP --> RR
-    QQ --> RR
-    
-    RR --> SS["📲 idevicebackup2 Init"]
-    SS --> TT["🔗 Device Connection Check"]
-    TT --> UU{"📱 Device Ready?"}
-    UU -->|No| VV["❌ Connection Error"]
-    UU -->|Yes| WW["📤 Start Backup Restoration"]
-    
-    %% Restoration Process
-    WW --> XX["📋 Backup Validation"]
-    XX --> YY["📁 File Transfer"]
-    YY --> ZZ["🗃️ Database Updates"]
-    ZZ --> AAA["🔄 Device Reboot"]
-    
-    %% Final Steps
-    AAA --> BBB{"✅ Restoration Success?"}
-    BBB -->|No| CCC["❌ Restoration Error"]
-    BBB -->|Yes| DDD["🎉 Success Message"]
-    
-    %% Cleanup
-    DDD --> EEE["🧹 Cleanup Temp Files"]
-    CCC --> EEE
-    VV --> EEE
-    R --> EEE
-    
-    EEE --> FFF["🔄 Reset UI State"]
-    FFF --> S
-    
-    %% Error Handling Paths
-    R --> GGG["📝 Log Error Details"]
-    VV --> GGG
-    CCC --> GGG
-    GGG --> HHH["👤 User Notification"]
-    HHH --> EEE
-    
-    %% Styling
-    classDef uiLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef deviceLayer fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef processLayer fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef errorLayer fill:#ffebee,stroke:#b71c1c,stroke-width:2px
-    classDef successLayer fill:#e0f2f1,stroke:#004d40,stroke-width:2px
-    
-    class A,S,T,U,FFF uiLayer
-    class B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,TT,UU deviceLayer
-    class V,W,X,Y,Z,AA,BB,CC,DD,EE,FF,GG,HH,II,JJ,KK,LL,MM,NN,OO,PP,QQ,RR,SS,WW,XX,YY,ZZ,AAA,BBB,EEE processLayer
-    class R,VV,CCC,GGG,HHH errorLayer
-    class DDD successLayer
+    Detect["Detect connected device via IOKit"]
+    Read["Read device information via libimobiledevice"]
+    Display["Display model, firmware, and identifiers"]
+    Patch["User selects PATCH"]
+    Prepare["Create temporary directory"]
+    Templates["Decrypt and extract bundled backup templates"]
+    Customize["Write device-specific Info.plist and Manifest.plist"]
+    Restore["Restore prepared backup via idevicebackup2"]
+    Result{"Restore succeeded?"}
+    SuccessCleanup["Delete temporary directory"]
+    FailureCleanup["Delete temporary directory"]
+    Success["Show success and ask user to finish device setup"]
+    Failure["Show restore error and ask user to retry"]
+    Ready["Stop progress indicator and enable PATCH"]
+
+    Detect --> Read --> Display --> Patch
+    Patch --> Prepare --> Templates --> Customize --> Restore
+    Restore --> Result
+    Result -->|Yes| SuccessCleanup --> Success --> Ready
+    Result -->|No| FailureCleanup --> Failure --> Ready
 ```
 
 ### Core Components
