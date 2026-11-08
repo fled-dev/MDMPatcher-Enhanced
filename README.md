@@ -2,6 +2,10 @@
 # MDMPatcher Enhanced
 <img src="https://github.com/fled-dev/MDMPatcher-Enhanced/blob/931b3f9032d948c277611addd234dc5f304c88d3/screenshots/banner.png" style="width:100%">
 
+> **iOS / iPadOS 27: this tool does not work.** Apple changed how management information is restored from backups, closing the route used by this app. See [Compatibility](#compatibility) for Apple's documentation and the limits of downgrading.
+>
+> **Maintenance:** I don't actively maintain this repository. Contributions, documentation fixes, compatibility reports, and pull requests are welcome. See [Maintenance & Contributions](#maintenance--contributions).
+
 ### ⚠️ **Legal & Technical Disclaimer**  
 > This project is intended strictly for **educational, diagnostic, and personal device recovery use only**.  
 > It must **only** be used on iOS devices that the user **legally owns** and has the right to modify.  
@@ -14,11 +18,12 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Compatibility](#compatibility)
+- [Maintenance & Contributions](#maintenance--contributions)
 - [Requirements](#requirements)
 - [Instructions](#instructions)
 - [Troubleshooting](#typical-issues)
 - [Internals](#internals--architecture)
-- [Dependencies](#software-dependencies)
 
 
 ## Overview
@@ -30,6 +35,28 @@ No jailbreak is required. No low-level kernel or firmware modifications are perf
 ### Application Preview
 <img src="https://github.com/fled-dev/MDMPatcher-Enhanced/blob/5dcac8faab83e63f7c37747e81cd92ac2221386f/screenshots/app.png" style="width:70%;">
 
+## Compatibility
+
+**MDMPatcher Enhanced does not work on iOS 27 or iPadOS 27.** Apple's [WWDC26 device management updates](https://support.apple.com/guide/deployment/depd638aa061/web) explain that these versions no longer restore management information from backups. Devices registered with Apple School Manager or Apple Business enroll again through Automated Device Enrollment after restoration. Apple also documents this behavior in [Restore managed Apple devices](https://support.apple.com/guide/deployment/restore-managed-apple-devices-depd44f04xc4/web).
+
+This app uses a modified backup and restore workflow, so that change closes the route it relies on. This is the project's compatibility assessment based on Apple's documented change; Apple does not name MDMPatcher Enhanced in those notes.
+
+Earlier versions may still work, depending on the device and firmware. For example, [issue #12](https://github.com/fled-dev/MDMPatcher-Enhanced/issues/12) reports success on an iPhone 15 with iOS 26.2. That is a community report, not a guarantee for every iOS 26 release or device.
+
+### Downgrading from iOS / iPadOS 27
+
+You may still be able to use the tool after first downgrading to compatible older firmware **if Apple is still signing that firmware for your exact device**. Use [IPSW Downloads](https://ipsw.me) to find a matching pre-27 IPSW and check its signing status, then use Finder's **Option + Restore** to select that IPSW, as described in [Instructions](#instructions).
+
+Apple's [Secure software updates](https://support.apple.com/guide/security/secure-software-updates-secf683e0b36/web) explains that installation requires Apple's current authorization. Downloading an unsigned IPSW does not make it installable through Finder. If no compatible pre-27 firmware is signed for your device, this downgrade route is unavailable. Devices that shipped with iOS / iPadOS 27 may have no compatible older firmware at all.
+
+**Restoring erases the device.** Back up your data first; a backup made on a newer OS may require that newer OS to restore ([Apple's backup compatibility guidance](https://support.apple.com/en-us/108811)). Downgrading or using this tool does not release a device from an organization's Apple School Manager or Apple Business registration. For permanent removal, the organization must release the device.
+
+## Maintenance & Contributions
+
+I don't actively maintain this repository, and I can't promise updates, support, or compatibility with new iOS / iPadOS releases. Feel free to contribute by opening a pull request with code improvements, documentation fixes, or other useful changes.
+
+When reporting compatibility or a problem, include the device model, exact iOS / iPadOS version, macOS version, and steps you followed. Check existing issues first and remove serial numbers, UDIDs, and other personal information from logs or screenshots.
+
 ## Changes from the Original Repository
 - **Improved documentation**
 - **Bug fixes**
@@ -38,29 +65,32 @@ No jailbreak is required. No low-level kernel or firmware modifications are perf
 
 ## Requirements
 - macOS 10.13+ (Intel or Apple Silicon)
-- iOS 15 to 18.5+
-- iPhone 5s to iPhone 16
-- All current iPads
-- IPSW file for your device (from [ipsw.me](https://ipsw.me))
+- Compatible firmware earlier than iOS / iPadOS 27; historically documented for iOS 15–18.5, with community reports on later versions (see [Compatibility](#compatibility))
+- An iPhone or iPad that supports the selected firmware; compatibility depends on both the model and OS version
+- The app DMG from [Releases](https://github.com/fled-dev/MDMPatcher-Enhanced/releases/latest)
+- An IPSW file that Apple is currently signing for your exact device (from [ipsw.me](https://ipsw.me))
 
 ## Instructions
-- Download the correct IPSW file for your device from [ipsw.me](https://ipsw.me).
+- **Install the released app:** Download the **DMG** from [Releases](https://github.com/fled-dev/MDMPatcher-Enhanced/releases/latest), open it, and drag **MDMPatcher Enhanced.app** to your **Applications** folder. You do not need to clone the repository or download GitHub's source-code archives to use the app. Wait until the Finder activation step below before launching it.
+- Read [Compatibility](#compatibility) first, and back up any data you need before restoring.
+- Download the correct **Apple-signed, compatible pre-27 IPSW** for your device from [ipsw.me](https://ipsw.me). If downgrading, check the signing status immediately before restoring; an available download alone does not mean Apple still permits installation.
   - To find the correct IPSW file for your iOS device:
     - Look up the model number on the back of your device (e.g., A1567).
     - Match the model number with the device name using a website like [The iPhone Wiki](https://www.theiphonewiki.com/wiki/Models). For example, A1567 corresponds to the iPad Air 2.
-    - **Choose between Cellular and Wi-Fi versions:** If your device has a SIM card slot, download the Cellular IPSW; otherwise, download the Wi-Fi only version.
-- Put your iOS device into recovery mode.
-  - **For iPads without a Home button:** Press and hold the Top button while connecting it to your computer. Keep holding until the recovery mode screen appears.
-  - **For iPads with a Home button:** Hold the Home button while connecting it to your computer. Keep holding until the recovery mode screen appears.
-  - **For iPhones with Face ID or iPhone 8 and later:** Press and hold the Side Button while connecting it to your computer. Keep holding the button until the recovery mode screen appears.
-  - **For iPhone 7 and 7 Plus:** Hold the Volume Down button and connect it to your computer.
-  - **For iPhone 6s and earlier:** Hold the Home Button while connecting it to your computer.
-- Once in recovery mode, a message will appear on your computer asking if you want to update or restore the device. **Hold the OPTION key** on your keyboard, then click either **Update** or **Restore**. This will allow you to choose the IPSW file you downloaded for your device.
+    - **Choose the exact model and variant:** Match the model identifier, including Cellular versus Wi-Fi where applicable. Do not rely on the presence of a physical SIM slot; some cellular devices use eSIM only.
+- Connect your device to your Mac with a USB cable, open Finder (or iTunes on older macOS versions), and put the device into recovery mode. Keep it connected throughout:
+  - **For iPhones 8 and later, including iPhone SE (2nd generation and later):** Press and quickly release **Volume Up**, press and quickly release **Volume Down**, then press and hold the **Side button**. Keep holding through the black screen and Apple logo until the **Connect to computer** screen appears.
+  - **For iPhone 7 and 7 Plus:** Hold the **Side and Volume Down buttons** together until the recovery mode screen appears.
+  - **For iPhone 6s and earlier, including iPhone SE (1st generation):** Hold the **Home and Top (or Side) buttons** together until the recovery mode screen appears.
+  - **For iPads without a Home button:** Press and quickly release the volume button **closest to the Top button**, then the volume button **farthest from it**. Hold the **Top button** until the recovery mode screen appears.
+  - **For iPads with a Home button:** Hold the **Home and Top buttons** together. When the iPad turns off, release the Top button and keep holding Home until the recovery mode screen appears.
+  - See Apple's recovery instructions for [iPhone](https://support.apple.com/en-us/118106) and [iPad](https://support.apple.com/en-us/108925).
+- When your computer offers Update or Restore, **hold the Option (⌥) key and click Restore**, then select the IPSW you downloaded. Confirm the restore and wait for it to finish. **This erases the device.** For a downgrade, use Restore; Update is not the downgrade procedure.
 - After restoration, follow initial setup **until you reach the Wi-Fi selection** screen. **Do NOT connect to ANY network!**
+- **Before opening MDMPatcher:** In Finder (or iTunes on older macOS versions), select your **iPhone or iPad** and wait for activation to finish (it will show **Get Started**). Your Mac needs internet access for activation; keep the device at its Wi-Fi selection screen. If necessary, unplug and reconnect the USB cable.
 - Open the MDMPatcher app on your Mac.
 - Disable SIP if the app won’t open (for M1 Macs: use csrutil disable in recovery mode terminal).
   - Read more at [developer.apple.com](https://developer.apple.com/documentation/security/disabling-and-enabling-system-integrity-protection)
-- **Important:** Before opening the MDMPatcher app, open Finder, click on your iPad, and wait for it to finish activating (it will show "Get Started"). You may need to unplug and reconnect the cable if you encounter issues.
 - When your device info shows in MDMPatcher, click "PATCH" to complete the process.
 - After reboot, follow the remaining setup instructions on the device.
 
